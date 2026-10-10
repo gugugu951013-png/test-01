@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#ffffff">
+<title>결 — 글쓰기</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;600&family=Nanum+Myeongjo:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--fg:#111;--sub:#8b8b8b;--line:#ececec;--card:#f5f5f5;--paper:#fafafa;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e0e0e;--fg:#f2f2f2;--sub:#7d7d7d;--line:#242424;--card:#1a1a1a;--paper:#161616}}
+:root[data-theme="dark"]{--bg:#0e0e0e;--fg:#f2f2f2;--sub:#7d7d7d;--line:#242424;--card:#1a1a1a;--paper:#161616}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+html,body{height:100%;margin:0}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--fg);font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Pretendard","Noto Sans KR","Segoe UI",sans-serif;-webkit-font-smoothing:antialiased;overflow:hidden}
+#app{height:100%;display:flex;flex-direction:column;max-width:760px;margin:0 auto}
+button,input,textarea{font:inherit;color:inherit;border:0;background:none;outline:0}
+button{cursor:pointer}
+.top{display:flex;align-items:center;gap:8px;padding:14px 20px 10px;min-height:60px}
+.top h1{margin:0;font-size:28px;font-weight:700;letter-spacing:-.03em;flex:1}
+.pill{background:var(--fg);color:var(--bg);border-radius:999px;padding:9px 16px;font-size:14px;font-weight:600;white-space:nowrap}
+.pill:hover{opacity:.85}
+.ic{font-size:28px;line-height:1;width:36px;height:36px;border-radius:50%;color:var(--fg);flex:none}
+.ic:hover,.txt:hover{background:var(--card)}
+.bt{flex:1;min-width:0;font-size:17px;font-weight:700;letter-spacing:-.02em}
+.list{padding:8px 20px 24px;display:flex;flex-direction:column;gap:10px;overflow:auto}
+.card{background:var(--card);border-radius:20px;padding:20px;text-align:left;display:flex;flex-direction:column;gap:6px;transition:transform .15s}
+.card:hover{transform:translateY(-1px)}.card:active{transform:scale(.98)}
+.card b{font-size:17px;letter-spacing:-.02em}.card span{font-size:13px;color:var(--sub)}
+.empty{color:var(--sub);text-align:center;margin-top:30vh;line-height:1.7}
+.tabs{display:flex;gap:6px;padding:4px 20px 10px;overflow-x:auto;scrollbar-width:none;flex:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;padding:7px 13px;border-radius:999px;background:var(--card);color:var(--sub);font-size:13px;font-weight:500;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tab.on{background:var(--fg);color:var(--bg)}
+.ct{padding:6px 20px;font-size:24px;font-weight:700;letter-spacing:-.03em;width:100%}
+#tx{flex:1;padding:8px 20px 20px;font-size:17px;line-height:1.85;resize:none;width:100%;word-break:keep-all}
+::placeholder{color:var(--sub);opacity:.7}
+.bar{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;border-top:1px solid var(--line);font-size:12px;color:var(--sub);flex:none}
+.txt{font-size:12px;color:var(--sub);padding:6px 10px;border-radius:8px}
+.pg{flex:1;text-align:center;font-size:13px;color:var(--sub);font-variant-numeric:tabular-nums}
+.stage{flex:1;min-height:0;display:flex;align-items:stretch;gap:6px;padding:0 12px 14px}
+.nav{flex:none;width:36px;align-self:center;height:72px;border-radius:12px;color:var(--sub);font-size:24px}
+.nav:hover{background:var(--card);color:var(--fg)}
+@media (hover:none){.nav{display:none}}
+.bk{flex:1;min-width:0;overflow-x:auto;overflow-y:hidden;background:var(--paper);border:1px solid var(--line);border-radius:18px;padding:28px 0;scrollbar-width:none}
+.bk::-webkit-scrollbar{display:none}
+.col{position:relative;font-family:"Noto Serif KR","Apple SD Gothic Neo",serif;font-size:var(--fs,16px);line-height:1.95;word-break:keep-all}
+.col p,.col h2,.col h3,.col .tr,.cover{padding-inline:26px}
+.col p{margin:0;text-align:justify;text-indent:1em}
+.col h2{margin:0 0 1.2em;font-size:1.35em;letter-spacing:-.02em}
+.col h3{margin:0 0 1em;font-size:1.1em}
+.chap{break-before:column}
+.toc{break-after:column}
+.tr{display:flex;justify-content:space-between;gap:12px;padding-block:6px;border-bottom:1px solid var(--line);font-size:.92em}
+.tr i{font-style:normal;color:var(--sub);font-variant-numeric:tabular-nums}
+.cover{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;break-after:column}
+.cover small{letter-spacing:.3em;color:var(--sub);font-size:11px}
+.cover h1{font-size:1.9em;margin:.6em 0;letter-spacing:-.03em;line-height:1.4}
+.cover p{color:var(--sub);font-size:.8em;margin:0;text-indent:0}
+.intro{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;animation:fi .4s ease both}
+.intro h1{font-family:"Noto Serif KR",serif;font-size:84px;font-weight:600;margin:0;letter-spacing:-.04em}
+.intro p{margin:0;color:var(--sub);font-size:14px;letter-spacing:.12em}
+@keyframes fi{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.hero{margin:4px 20px 18px;padding:24px 22px;border-radius:24px;background:var(--card)}
+.hero small{color:var(--sub);font-size:13px;display:flex;align-items:center;gap:7px}
+.hero small:before{content:"";width:7px;height:7px;border-radius:50%;background:var(--fg);animation:bl 1.4s infinite}
+@keyframes bl{50%{opacity:.2}}
+.hero h2{margin:8px 0 14px;font-size:24px;letter-spacing:-.03em}
+.ctoc{display:flex;flex-direction:column}
+.ctoc button{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-top:1px solid var(--line);text-align:left;font-size:15px}
+.ctoc button span:last-child{color:var(--sub);font-size:13px}
+.ctoc .cur{font-weight:700}
+.sec{margin:0 20px 8px;font-size:13px;color:var(--sub)}
+.hero .pill{margin-top:16px;width:100%;padding:13px}
+.stage{perspective:2200px;position:relative}
+.leaf{position:absolute;transform-style:preserve-3d;transform-origin:left center;pointer-events:none;z-index:5}
+.lfi,.lb{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:1px solid var(--line);border-radius:18px;background:var(--paper);box-shadow:0 0 28px rgba(0,0,0,.22)}
+.lfi{overflow:hidden;padding:28px 0}
+.lb{transform:rotateY(180deg)}
+.bk{overflow-x:hidden;touch-action:pan-y}
+#app{position:relative}
+.gear{position:absolute;left:16px;bottom:14px;width:46px;height:46px;border-radius:50%;background:var(--card);display:flex;align-items:center;justify-content:center;color:var(--fg);box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.opts{background:var(--card);border-radius:20px;overflow:hidden}
+.opt{display:flex;justify-content:space-between;width:100%;padding:16px 18px;font-size:16px;text-align:left}
+.opt+.opt{border-top:1px solid var(--line)}
+.opt.on{font-weight:700}
+.opt i{font-style:normal}
+input[type=range]{accent-color:var(--fg)}
+.intro h1{font-family:"Nanum Myeongjo","Noto Serif KR",serif;font-weight:800;font-size:96px;letter-spacing:0;display:flex;align-items:baseline;min-height:1.3em}
+.intro .cu{font-weight:400;margin-left:3px;animation:cb 1s steps(1) infinite}
+@keyframes cb{50%{opacity:0}}
+.intro p{opacity:0;animation:fi .5s .8s ease both}
+.intro h1{font-family:inherit;font-weight:700;letter-spacing:-.04em}
+.shb{position:absolute;right:16px;bottom:18px;padding:12px 20px}
+.row{margin-bottom:6px}
+.bks{display:flex;align-items:flex-end;gap:5px;padding:0 24px;min-height:200px}
+.sp{flex:none;padding-top:12px;border-radius:3px 3px 1px 1px;writing-mode:vertical-rl;font-weight:700;font-size:13px;letter-spacing:.06em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:inset 0 10px 0 -7px rgba(255,255,255,.28),inset 0 -10px 0 -7px rgba(255,255,255,.28),2px 0 6px rgba(0,0,0,.14);transition:transform .25s}
+.sp.pull{transform:translateY(-16px) scale(1.04)}
+.board{height:12px;margin:0 12px 24px;border-radius:2px;background:linear-gradient(var(--line),var(--card));box-shadow:0 6px 10px rgba(0,0,0,.1)}
+:root{--case:#cfcfcf;--back:#e6e6e6;--wood:#b9b9b9}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--case:#2c2c2c;--back:#151515;--wood:#3b3b3b}}
+:root[data-theme="dark"]{--case:#2c2c2c;--back:#151515;--wood:#3b3b3b}
+.cs{margin:0 16px;border:10px solid var(--case);border-radius:6px;background:var(--back);box-shadow:0 12px 30px rgba(0,0,0,.18),inset 0 0 18px rgba(0,0,0,.25)}
+.cell{position:relative;padding-top:16px;box-shadow:inset 0 14px 14px -12px rgba(0,0,0,.3)}
+.bks{display:flex;align-items:flex-end;gap:2px;padding:0 12px;min-height:190px}
+.pl{height:14px;margin:0 -10px;background:linear-gradient(var(--case),var(--wood));box-shadow:0 4px 8px rgba(0,0,0,.28);border-top:1px solid rgba(255,255,255,.35)}
+.sp{border-radius:2px 2px 0 0;font-size:12px;letter-spacing:.04em;box-shadow:inset 0 8px 0 -6px rgba(255,255,255,.3),inset 0 -8px 0 -6px rgba(255,255,255,.3),3px 0 5px rgba(0,0,0,.28)}
+:root{--case:#f7f7f7;--back:#e9e9e9;--wood:#d6d6d6}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--case:#2b2b2b;--back:#1a1a1a;--wood:#3a3a3a}}
+:root[data-theme="dark"]{--case:#2b2b2b;--back:#1a1a1a;--wood:#3a3a3a}
+.cs{margin:0 18px;border:12px solid var(--case);border-bottom-width:0;border-radius:0;background:var(--back);outline:1px solid var(--line);box-shadow:0 10px 24px rgba(0,0,0,.08)}
+.cell{padding-top:14px;box-shadow:inset 0 12px 12px -12px rgba(0,0,0,.16)}
+.bks{padding:0 10px;gap:2px;min-height:176px}
+.pl{position:relative;height:10px;margin:0;background:var(--case);border-top:1px solid var(--line);border-bottom:1px solid var(--line);box-shadow:0 2px 3px rgba(0,0,0,.1)}
+.pl::before,.pl::after{content:"";position:absolute;top:13px;width:4px;height:4px;border-radius:50%;background:var(--wood)}
+.pl::before{left:6px}.pl::after{right:6px}
+.base{margin:0 30px;height:18px;background:var(--case);outline:1px solid var(--line);border-top:2px solid var(--wood);box-shadow:0 8px 14px -6px rgba(0,0,0,.25)}
+.sp{border-radius:1px;box-shadow:inset 0 7px 0 -6px rgba(255,255,255,.35),inset 0 -7px 0 -6px rgba(255,255,255,.35),1px 0 0 rgba(0,0,0,.18)}
+.sh{position:absolute;inset:0;z-index:20;display:flex;align-items:flex-end}
+.sh-bg{position:absolute;inset:0;background:rgba(0,0,0,.4)}
+.sh-p{position:relative;width:100%;background:var(--bg);border-radius:24px 24px 0 0;padding:20px 20px 28px;display:flex;flex-direction:column;gap:8px;animation:fi .25s}
+.sh-p b{font-size:17px;margin-bottom:6px;letter-spacing:-.02em}
+.sh-p button{background:var(--card);border-radius:16px;padding:16px;font-size:16px;font-weight:600;text-align:left}
+.sh-p button.x{color:var(--sub);background:none;text-align:center;font-weight:500}
+.toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:30;animation:fi .3s}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const $=s=>document.querySelector(s);
+let S=null;
+try{S=JSON.parse(localStorage.getItem('gyeol1'))}catch(e){}
+if(!S||!S.books)S={books:[],cur:null,ci:0,fs:16};
+let view='intro',armed=false,A=null;
+const save=()=>{try{localStorage.setItem('gyeol1',JSON.stringify(S))}catch(e){}};
+const uid=()=>Math.random().toString(36).slice(2,9);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const book=()=>S.books.find(b=>b.id===S.cur);
+const cnt=b=>b.ch.reduce((n,c)=>n+c.b.replace(/\s/g,'').length,0);
+const go=v=>{view=v;armed=false;R()};
+
+const SN=['소리 끔','청축','백축','갈축','무접점','청해축','심해축','딥치즈축'];
+const AC=()=>A||(A=new(window.AudioContext||window.webkitAudioContext)());
+function tick(key){const p=S.snd||0;if(!p)return;try{const c=AC();if(c.state==='suspended')c.resume();const t=c.currentTime,K=KV(),big=key===' '||key==='Enter'||key==='Backspace',pf=big?(key===' '?.62:.75):1,j=.95+Math.random()*.1;
+ const N=(o,type,f,q,g,d)=>{const n=Math.floor(c.sampleRate*(d+.02)),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const F=c.createBiquadFilter();F.type=type;F.frequency.value=f*pf*j;F.Q.value=q;const G=c.createGain();G.gain.setValueAtTime(.0001,t+o);G.gain.linearRampToValueAtTime(g*K,t+o+.002);G.gain.exponentialRampToValueAtTime(.0001,t+o+d);s.connect(F);F.connect(G);G.connect(c.destination);s.start(t+o);s.stop(t+o+d+.02)};
+ const T=(o,type,f0,f1,g,d)=>{const x=c.createOscillator(),G=c.createGain();x.type=type;x.frequency.setValueAtTime(f0*pf*j,t+o);x.frequency.exponentialRampToValueAtTime(f1*pf*j,t+o+d);G.gain.setValueAtTime(.0001,t+o);G.gain.linearRampToValueAtTime(g*K,t+o+.002);G.gain.exponentialRampToValueAtTime(.0001,t+o+d);x.connect(G);G.connect(c.destination);x.start(t+o);x.stop(t+o+d+.01)};
+ if(p===1){N(0,'bandpass',5200,6,.9,.03);T(0,'square',3400,2600,.12,.012);N(.045,'bandpass',2300,2.5,.8,.05);T(.045,'triangle',260,140,.3,.06)}
+ else if(p===2){N(0,'highpass',3200,.7,.55,.014);T(0,'sine',1900,1300,.14,.02);T(.004,'sine',320,200,.15,.035)}
+ else if(p===3){N(0,'bandpass',1000,1.1,.55,.05);T(0,'sine',210,105,.5,.075);N(.022,'lowpass',700,.8,.3,.04)}
+ else if(p===4){T(0,'sine',130,52,.95,.15);N(0,'lowpass',420,.7,.45,.09);T(.03,'sine',95,60,.35,.1)}
+ else if(p===5){N(0,'highpass',6500,.6,.5,.03);T(0,'sine',2600,1700,.16,.03);N(.03,'bandpass',4800,3,.35,.06);T(.03,'sine',1500,1100,.1,.05)}
+ else if(p===6){T(0,'sine',320,720,.4,.07);T(.05,'sine',480,980,.3,.06);T(.1,'sine',260,620,.25,.07);N(0,'lowpass',600,.8,.15,.05)}
+ else{T(0,'sine',160,70,.6,.16);T(.02,'sine',100,48,.7,.22);N(0,'lowpass',320,2,.5,.12);T(.1,'sine',90,200,.25,.1)}
+}catch(e){}}
+function tickOld(){const p=S.snd||0;if(!p)return;try{const c=AC();if(c.state==='suspended')c.resume();const t=c.currentTime;
+ const N=(o,f,q,g,d)=>{const n=Math.floor(c.sampleRate*.06),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const F=c.createBiquadFilter();F.type='bandpass';F.frequency.value=f*(.94+Math.random()*.12);F.Q.value=q;const G=c.createGain();G.gain.setValueAtTime(g*KV(),t+o);G.gain.exponentialRampToValueAtTime(.001,t+o+d);s.connect(F);F.connect(G);G.connect(c.destination);s.start(t+o);s.stop(t+o+.06)};
+ const T=(f0,f1,g,d)=>{const o=c.createOscillator(),G=c.createGain();o.frequency.setValueAtTime(f0,t);o.frequency.exponentialRampToValueAtTime(f1,t+d);G.gain.setValueAtTime(g*KV(),t);G.gain.exponentialRampToValueAtTime(.001,t+d);o.connect(G);G.connect(c.destination);o.start(t);o.stop(t+d)};
+ if(p===1){N(0,4200,3,.5,.025);N(.022,3000,2,.35,.03);T(220,120,.25,.05)}
+ else if(p===2){N(0,3000,2,.3,.03);T(200,110,.2,.05)}
+ else if(p===3){N(0,1500,1.2,.35,.04);T(170,90,.3,.06)}
+ else{T(140,70,.55,.09);N(0,700,.8,.25,.05)}
+}catch(e){}}
+function swish(){if(S.ps===0)return;try{const c=AC(),n=Math.floor(c.sampleRate*.4),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const F=c.createBiquadFilter();F.type='bandpass';F.Q.value=.7;const t=c.currentTime;F.frequency.setValueAtTime(900,t);F.frequency.exponentialRampToValueAtTime(3200,t+.35);const G=c.createGain();G.gain.setValueAtTime(.001,t);G.gain.linearRampToValueAtTime(.12*KV(),t+.12);G.gain.exponentialRampToValueAtTime(.001,t+.4);s.connect(F);F.connect(G);G.connect(c.destination);s.start(t)}catch(e){}}
+function R(){const a=$('#app');if(view==='intro'){a.innerHTML='<div class="intro"><h1><span id="ty"></span><b class="cu">_</b></h1><p>써내려가는 시간</p></div>';['ㄱ','겨','결'].forEach((s,i)=>setTimeout(()=>{const e=$('#ty');if(e)e.textContent=s},200+i*200));const n=()=>{if(view==='intro')go('lib')};a.onclick=n;setTimeout(n,1700);return}a.onclick=null;if(view==='lib'){lib(a);a.insertAdjacentHTML('beforeend','<button class="gear" id="gr" aria-label="설정">'+GEAR+'</button>');$('#gr').onclick=()=>go('set');a.insertAdjacentHTML('beforeend','<button class="pill shb" id="sh">책장</button>');$('#sh').onclick=()=>go('shelf')}else if(view==='ed')ed(a);else if(view==='set')setPage(a);else if(view==='shelf')shelf(a);else bk(a)}
+const GEAR='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
+const KV=()=>(S.vol??.7)/.7;
+function shelf(a){
+ const B=S.books,P=[['#111','#f2f2f2'],['#2e2e2e','#f2f2f2'],['#e6e6e6','#111'],['#8a8a8a','#fff'],['#4a4a4a','#f2f2f2'],['#cfcfcf','#111']],rows=[];
+ for(let i=0;i<B.length;i+=6)rows.push(B.slice(i,i+6));
+ a.innerHTML=`<header class="top"><button class="ic" id="back" aria-label="뒤로">‹</button><h1 style="font-size:20px">책장</h1></header><div style="overflow:auto;flex:1;padding-top:8px">${B.length?rows.map((r,ri)=>`<div class="row"><div class="bks">${r.map((b,i)=>{const k=ri*6+i,w=34+Math.min(26,b.ch.length*6),h=130+Math.min(70,Math.floor(cnt(b)/150)),c=P[k%P.length];return `<button class="sp" data-id="${b.id}" style="width:${w}px;height:${h}px;line-height:${w}px;background:${c[0]};color:${c[1]};${k%5===3?'rotate:4deg;transform-origin:bottom left;':''}">${esc(b.title||'제목 없음')}</button>`}).join('')}</div><div class="board"></div></div>`).join(''):'<p class="empty" style="margin-top:20vh">아직 꽂힌 책이 없어요.</p>'}<p class="sec" style="text-align:center;margin:12px">${B.length}권</p></div>`;
+ $('#back').onclick=()=>go('lib');
+ a.querySelectorAll('.sp').forEach(s=>s.onclick=()=>{s.classList.add('pull');setTimeout(()=>{const id=s.dataset.id,k=S.books.findIndex(x=>x.id===id),m=S.books.splice(k,1)[0];S.books.unshift(m);S.cur=id;S.ci=0;save();go('ed')},260)});
+}
+function setPage(a){
+ const cs=S.snd||0;
+ a.innerHTML=`<header class="top"><button class="ic" id="back" aria-label="뒤로">‹</button><h1 style="font-size:20px">설정</h1></header>
+ <div style="overflow:auto;flex:1;padding:0 20px 24px"><p class="sec" style="margin:8px 0">화면</p><div class="opts">${[['system','시스템 설정 따라가기'],['light','라이트'],['dark','다크']].map(([k,n])=>`<button class="opt th ${(S.theme||'system')===k?'on':''}" data-t="${k}"><span>${n}</span><i>${(S.theme||'system')===k?'✓':''}</i></button>`).join('')}</div>
+ <p class="sec" style="margin:22px 0 8px">키보드 타건음</p><div class="opts">${SN.map((n,i)=>`<button class="opt ${cs===i?'on':''}" data-i="${i}"><span>${n}</span><i>${cs===i?'✓':''}</i></button>`).join('')}</div>
+ <p class="sec" style="margin:22px 0 8px">페이지 넘김</p><div class="opts"><button class="opt" id="ps"><span>넘길 때 소리</span><i>${S.ps===0?'꺼짐':'켜짐'}</i></button></div>
+ <p class="sec" style="margin:22px 0 8px">볼륨</p><input type="range" id="vol" min="10" max="100" value="${Math.round((S.vol??.7)*100)}" style="width:100%">
+ <p class="sec" style="margin:16px 0;line-height:1.6">항목을 누르면 소리를 미리 들어볼 수 있어요. 글을 쓸 때와 책장을 넘길 때 적용돼요.</p></div>`;
+ $('#back').onclick=()=>go('lib');
+ a.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{S.snd=+b.dataset.i;save();setPage(a);tick()});
+ $('#vol').oninput=e=>{S.vol=e.target.value/100;save()};
+ $('#vol').onchange=()=>tick();
+ $('#ps').onclick=()=>{S.ps=S.ps===0?1:0;save();swish();setPage(a)};
+ a.querySelectorAll('.th').forEach(b=>b.onclick=()=>{S.theme=b.dataset.t;save();applyTheme();setPage(a)});
+}
+
+function lib(a){
+ if(!S.books.length)return lib0(a);
+ const b=S.books[0],o=S.books.slice(1);
+ a.innerHTML=`<header class="top"><h1>결</h1><button class="pill" id="nb">＋ 새 글</button></header>
+ <div style="overflow:auto;flex:1;padding-bottom:84px"><div class="hero"><small>지금 쓰고 있어요</small><h2>${esc(b.title||'제목 없음')}</h2><div class="ctoc">${b.ch.map((c,i)=>`<button data-c="${i}" class="${i===S.ci&&S.cur===b.id?'cur':''}"><span>${i+1}. ${esc(c.t||'제목 없음')}</span><span>${c.b.replace(/\s/g,'').length.toLocaleString()}자</span></button>`).join('')}</div><button class="pill" id="go">이어서 쓰기</button></div>
+ ${o.length?`<p class="sec">다른 글</p><div class="list">${o.map(x=>`<button class="card" data-id="${x.id}"><b>${esc(x.title||'제목 없음')}</b><span>${x.ch.length}개 챕터 · ${cnt(x).toLocaleString()}자</span></button>`).join('')}</div>`:''}</div>`;
+ const open=(id,i)=>{const k=S.books.findIndex(x=>x.id===id),m=S.books.splice(k,1)[0];S.books.unshift(m);S.cur=id;S.ci=i;save();go('ed')};
+ $('#nb').onclick=newBook;
+ $('#go').onclick=()=>open(b.id,S.cur===b.id?S.ci:0);
+ a.querySelectorAll('.ctoc button').forEach(t=>t.onclick=()=>open(b.id,+t.dataset.c));
+ a.querySelectorAll('.card').forEach(c=>c.onclick=()=>sheet(c.dataset.id));
+ a.querySelector('.hero h2').onclick=()=>sheet(b.id);
+}
+function lib0(a){
+ a.innerHTML=`<header class="top"><h1>내 글</h1><button class="pill" id="nb">＋ 새 글</button></header>
+ <div class="list">${S.books.length?S.books.map(b=>`<button class="card" data-id="${b.id}"><b>${esc(b.title||'제목 없음')}</b><span>${b.ch.length}개 챕터 · ${cnt(b).toLocaleString()}자</span></button>`).join(''):'<p class="empty">아직 글이 없어요.<br>첫 문장을 시작해 보세요.</p>'}</div>`;
+ $('#nb').onclick=newBook;
+ a.querySelectorAll('.card').forEach(c=>c.onclick=()=>{S.cur=c.dataset.id;S.ci=0;go('ed')});
+}
+function newBook(){
+ const b={id:uid(),title:'',ch:[{id:uid(),t:'',b:''}]};
+ S.books.unshift(b);S.cur=b.id;S.ci=0;save();go('ed');
+}
+
+function ed(a){
+ const b=book();if(!b){return go('lib')}
+ if(S.ci>=b.ch.length)S.ci=b.ch.length-1;
+ const c=b.ch[S.ci];
+ a.innerHTML=`<header class="top"><button class="ic" id="back" aria-label="뒤로">‹</button><input id="bt" class="bt" value="${esc(b.title)}" placeholder="책 제목"><button class="pill" id="pv">책으로 보기</button></header>
+ <nav class="tabs">${b.ch.map((x,i)=>`<button class="tab ${i===S.ci?'on':''}" data-i="${i}">${i+1}. ${esc(x.t||'제목 없음')}</button>`).join('')}<button class="tab" id="add">＋ 챕터</button></nav>
+ <input id="ct" class="ct" value="${esc(c.t)}" placeholder="챕터 제목">
+ <textarea id="tx" placeholder="여기에 쓰세요" spellcheck="false">${esc(c.b)}</textarea>
+ <footer class="bar"><span id="st"></span><button class="txt" id="del">챕터 삭제</button></footer>`;
+ const st=()=>$('#st').textContent=`${c.b.length.toLocaleString()}자 · 공백 제외 ${c.b.replace(/\s/g,'').length.toLocaleString()}자`;
+ st();
+ $('#tx').oninput=e=>{c.b=e.target.value;st();save()};
+ $('#ct').oninput=e=>{c.t=e.target.value;$('.tab.on').textContent=`${S.ci+1}. ${c.t||'제목 없음'}`;save()};
+ $('#bt').oninput=e=>{b.title=e.target.value;save()};
+ $('#back').onclick=()=>go('lib');
+ ['#tx','#ct'].forEach(q=>$(q).onkeydown=e=>{if(!e.metaKey&&!e.ctrlKey&&!e.altKey&&!['Shift','Meta','Control','Alt','CapsLock'].includes(e.key))tick(e.key)});
+ $('#pv').onclick=()=>go('book');
+ $('#add').onclick=addCh;
+ a.querySelectorAll('.tab[data-i]').forEach(t=>t.onclick=()=>{S.ci=+t.dataset.i;save();R()});
+ $('#del').onclick=e=>{
+  if(b.ch.length<2){e.target.textContent='마지막 챕터예요';return}
+  if(!armed){armed=true;e.target.textContent='한 번 더 누르면 삭제';return}
+  b.ch.splice(S.ci,1);S.ci=Math.max(0,S.ci-1);armed=false;save();R();
+ };
+ const on=$('.tab.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});
+ if(!c.b&&!b.title&&!c.t)$('#tx').focus();
+}
+function addCh(){const b=book();b.ch.push({id:uid(),t:'',b:''});S.ci=b.ch.length-1;save();R();$('#ct').focus()}
+
+function bk(a){
+ const b=book();if(!b){return go('lib')}
+ const paras=t=>t.split('\n').filter(l=>l.trim()).map(l=>`<p>${esc(l.trim())}</p>`).join('');
+ a.innerHTML=`<header class="top"><button class="ic" id="back" aria-label="뒤로">‹</button><span class="pg" id="pg"></span><button class="txt" id="fs" style="font-size:15px">가 크기</button><button class="pill" id="bd">편집</button></header>
+ <div class="stage"><button class="nav" id="pl" aria-label="이전 쪽">‹</button><div class="bk" id="bkv"><div class="col" id="col">
+ <section class="cover"><small>BOOK</small><h1>${esc(b.title||'제목 없음')}</h1><p>${b.ch.length}개 챕터 · ${cnt(b).toLocaleString()}자</p></section>
+ <section class="toc"><h3>목차</h3>${b.ch.map((c,i)=>`<div class="tr"><span>${esc(c.t||'제목 없음')}</span><i data-pn="${i}"></i></div>`).join('')}</section>
+ ${b.ch.map((c,i)=>`<article class="chap"><h2 id="h${i}">${esc(c.t||'제목 없음')}</h2>${paras(c.b)||'<p style="color:var(--sub)">아직 내용이 없어요.</p>'}</article>`).join('')}
+ </div></div><button class="nav" id="pr" aria-label="다음 쪽">›</button></div>`;
+ const v=$('#bkv'),col=$('#col');let W=0,N=1,tm;
+ const cur=()=>Math.round(v.scrollLeft/W);
+ const upd=()=>$('#pg').textContent=`${cur()+1} / ${N}`;
+ const to=p=>v.scrollTo({left:Math.max(0,Math.min(N-1,p))*W,behavior:'smooth'});
+ const layout=()=>{
+  col.style.setProperty('--fs',(S.fs||16)+'px');
+  W=v.clientWidth;col.style.height=(v.clientHeight-56)+'px';
+  col.style.columnWidth=W+'px';col.style.columnGap='0';col.style.columnFill='auto';
+  N=Math.max(1,Math.round(v.scrollWidth/W));
+  const l=col.getBoundingClientRect().left;
+  a.querySelectorAll('[data-pn]').forEach(e=>{const h=$('#h'+e.dataset.pn);e.textContent=Math.floor((h.getBoundingClientRect().left-l+2)/W)+1});
+  upd();
+ };
+ window._bl=layout;window._bp=d=>flip(d);
+ let busy=0;
+ const flip=d=>{const p=cur(),t=p+d;if(busy||t<0||t>=N)return;busy=1;swish();
+  const L=document.createElement('div');L.className='leaf';L.style.cssText=`left:${v.offsetLeft}px;top:${v.offsetTop}px;width:${v.offsetWidth}px;height:${v.offsetHeight}px`;
+  const src=d>0?p:t,cl=col.cloneNode(true);cl.removeAttribute('id');cl.style.width=W+'px';cl.style.transform=`translateX(${-src*W}px)`;
+  const f=document.createElement('div');f.className='lfi';f.appendChild(cl);const k=document.createElement('div');k.className='lb';L.append(f,k);$('.stage').appendChild(L);
+  if(d>0)v.scrollLeft=t*W;
+  const r=d>0?['rotateY(0deg)','rotateY(-180deg)']:['rotateY(-180deg)','rotateY(0deg)'];
+  L.animate([{transform:r[0]},{transform:r[1]}],{duration:650,easing:'cubic-bezier(.45,.05,.25,1)',fill:'forwards'}).onfinish=()=>{v.scrollLeft=t*W;L.remove();busy=0;upd()};
+ };
+ let sx=null;
+ v.onpointerdown=e=>{sx=e.clientX};
+ v.onpointerup=e=>{if(sx===null)return;const dx=e.clientX-sx;sx=null;const r=v.getBoundingClientRect(),x=e.clientX-r.left;if(dx<-40)flip(1);else if(dx>40)flip(-1);else if(Math.abs(dx)<10){if(x>r.width*.6)flip(1);else if(x<r.width*.4)flip(-1)}};
+ $('#pl').onclick=()=>flip(-1);$('#pr').onclick=()=>flip(1);
+ $('#back').onclick=$('#bd').onclick=()=>go('ed');
+ $('#fs').onclick=()=>{const z=[15,16,18,20];S.fs=z[(z.indexOf(S.fs||16)+1)%z.length];save();layout()};
+ requestAnimationFrame(layout);
+ if(document.fonts&&document.fonts.ready)document.fonts.ready.then(layout);
+}
+
+addEventListener('resize',()=>{if(view==='book'&&window._bl)window._bl()});
+addEventListener('keydown',e=>{
+ const m=e.metaKey||e.ctrlKey,k=e.key;
+ if(m&&k.toLowerCase()==='n'){e.preventDefault();view==='lib'?newBook():view==='ed'?addCh():0}
+ else if(m&&k.toLowerCase()==='p'){e.preventDefault();if(view==='ed')go('book');else if(view==='book')go('ed')}
+ else if(m&&k.toLowerCase()==='s'){e.preventDefault();save()}
+ else if(k==='Escape'){view==='book'?go('ed'):view==='ed'?go('lib'):0}
+ else if(view==='book'&&window._bp){
+  if(k==='ArrowRight'||k==='PageDown'||k===' '){e.preventDefault();_bp(1)}
+  else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();_bp(-1)}
+ }
+});
+function applyTheme(){const t=S.theme||'system',d=document.documentElement;if(t==='system')d.removeAttribute('data-theme');else d.setAttribute('data-theme',t);const m=document.querySelector('meta[name=theme-color]');if(m)m.content=(getComputedStyle(d).getPropertyValue('--bg')||'#fff').trim()}
+applyTheme();
+const MS=c=>{if(!c._m){const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=7000;lp.Q.value=.4;const rv=c.createConvolver(),n=Math.floor(c.sampleRate*.14),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);rv.buffer=b;const dry=c.createGain();dry.gain.value=.9;const wet=c.createGain();wet.gain.value=.16;lp.connect(dry);dry.connect(c.destination);lp.connect(rv);rv.connect(wet);wet.connect(c.destination);c._m=lp}return c._m};
+function tick(key){const p=S.snd||0;if(!p)return;try{const c=AC();if(c.state==='suspended')c.resume();const t=c.currentTime,K=KV(),M=MS(c),big=key===' '||key==='Enter'||key==='Backspace',pf=big?(key===' '?.7:.82):1,j=.96+Math.random()*.08;
+ const N=(o,type,f,q,g,d)=>{const n=Math.floor(c.sampleRate*(d+.02)),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const F=c.createBiquadFilter();F.type=type;F.frequency.value=f*pf*j;F.Q.value=q;const G=c.createGain();G.gain.setValueAtTime(.0001,t+o);G.gain.linearRampToValueAtTime(g*K,t+o+.002);G.gain.exponentialRampToValueAtTime(.0001,t+o+d);s.connect(F);F.connect(G);G.connect(M);s.start(t+o);s.stop(t+o+d+.02)};
+ const D=(o,f,g,d)=>{const x=c.createOscillator(),G=c.createGain();x.frequency.value=f*pf*j;G.gain.setValueAtTime(.0001,t+o);G.gain.linearRampToValueAtTime(g*K,t+o+.003);G.gain.exponentialRampToValueAtTime(.0001,t+o+d);x.connect(G);G.connect(M);x.start(t+o);x.stop(t+o+d+.01)};
+ const B=(o,f0,f1,g,d)=>{const x=c.createOscillator(),G=c.createGain();x.frequency.setValueAtTime(f0*j,t+o);x.frequency.exponentialRampToValueAtTime(f1*j,t+o+d);G.gain.setValueAtTime(.0001,t+o);G.gain.linearRampToValueAtTime(g*K,t+o+.004);G.gain.exponentialRampToValueAtTime(.0001,t+o+d);x.connect(G);G.connect(M);x.start(t+o);x.stop(t+o+d+.01)};
+ if(p===1){N(0,'bandpass',4300,4,.45,.012);N(.003,'bandpass',2900,3,.4,.015);N(.052,'bandpass',1900,1.5,.5,.035);N(.052,'lowpass',900,.7,.3,.05);D(.052,430,.22,.06);D(.052,790,.1,.045);N(.115,'bandpass',3600,4,.18,.01)}
+ else if(p===2){N(0,'highpass',3000,.7,.28,.012);N(.034,'bandpass',1500,1.4,.32,.028);D(.034,520,.16,.045);D(.034,980,.07,.035);N(.1,'bandpass',3200,3,.1,.01)}
+ else if(p===3){N(0,'bandpass',950,1,.32,.03);N(.038,'bandpass',1300,1.2,.36,.032);D(.038,300,.3,.075);D(.038,570,.14,.05);N(.1,'lowpass',1800,.8,.1,.03)}
+ else if(p===4){N(0,'lowpass',520,.7,.5,.055);D(0,150,.6,.13);D(0,235,.28,.09);D(0,92,.3,.15);N(.012,'bandpass',1250,1.2,.14,.02);N(.1,'lowpass',650,.7,.12,.035)}
+ else if(p===5){N(0,'highpass',5200,.5,.22,.05);N(0,'bandpass',3800,3,.3,.014);N(.03,'bandpass',2400,1.8,.26,.04);D(.03,640,.14,.05);N(.1,'highpass',6000,.5,.08,.03)}
+ else if(p===6){D(0,200,.28,.09);B(.004,340,720,.17,.07);B(.052,480,980,.12,.06);B(.1,280,640,.1,.07);N(0,'lowpass',700,.8,.12,.05)}
+ else{N(0,'lowpass',380,.8,.45,.1);D(0,108,.7,.17);D(0,165,.35,.12);N(.03,'bandpass',720,2,.16,.06);B(.055,95,210,.16,.11)}
+}catch(e){}}
+function shelf(a){
+ const B=S.books,P=[['#111','#f2f2f2'],['#2e2e2e','#f2f2f2'],['#e6e6e6','#111'],['#8a8a8a','#fff'],['#4a4a4a','#f2f2f2'],['#cfcfcf','#111'],['#1c1c1c','#ddd'],['#b5b5b5','#111']],RN=Math.max(3,Math.ceil(B.length/6));
+ let h='';
+ for(let ri=0;ri<RN;ri++){const r=B.slice(ri*6,ri*6+6);
+  h+=`<div class="cell"><div class="bks">${r.map((b,i)=>{const k=ri*6+i,w=26+Math.min(16,b.ch.length*4),ht=118+Math.min(56,Math.floor(cnt(b)/150))+(k*37)%16,c=P[(k*3+ri)%P.length],lean=r.length>1&&r.length<6&&i===r.length-1;return `<button class="sp" data-id="${b.id}" style="width:${w}px;height:${ht}px;line-height:${w}px;background:linear-gradient(90deg,rgba(255,255,255,.16),rgba(255,255,255,0) 35%,rgba(0,0,0,.24)),${c[0]};color:${c[1]};${lean?'rotate:-7deg;transform-origin:bottom right;':''}">${esc(b.title||'제목 없음')}</button>`}).join('')}</div><div class="pl"></div></div>`}
+ a.innerHTML=`<header class="top"><button class="ic" id="back" aria-label="뒤로">‹</button><h1 style="font-size:20px">책장</h1></header><div style="overflow:auto;flex:1;padding:8px 0 24px"><div class="cs">${h}</div><p class="sec" style="text-align:center;margin:14px">${B.length}권</p></div>`;
+ $('#back').onclick=()=>go('lib');
+ a.querySelectorAll('.sp').forEach(s=>s.onclick=()=>{s.classList.add('pull');setTimeout(()=>{const id=s.dataset.id,k=S.books.findIndex(x=>x.id===id),m=S.books.splice(k,1)[0];S.books.unshift(m);S.cur=id;S.ci=0;save();go('ed')},260)});
+}
+const MS2=c=>{if(!c._m2){const lp=c.createBiquadFilter();lp.type='lowpass';lp.frequency.value=9000;const cp=c.createDynamicsCompressor();cp.threshold.value=-22;cp.knee.value=18;cp.ratio.value=5;cp.attack.value=.001;cp.release.value=.08;const mk=c.createGain();mk.gain.value=1.6;lp.connect(cp);cp.connect(mk);const rv=c.createConvolver(),n=Math.floor(c.sampleRate*.1),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=(Math.random()*2-1)*Math.pow(1-i/n,3);rv.buffer=b;const w=c.createGain();w.gain.value=.1;mk.connect(c.destination);mk.connect(rv);rv.connect(w);w.connect(c.destination);c._m2=lp}return c._m2};
+function tick(key){const p=S.snd||0;if(!p)return;try{const c=AC();if(c.state==='suspended')c.resume();const t=c.currentTime,K=KV(),M=MS2(c),kc=key&&key.length===1?key.charCodeAt(0):0,sp=key===' ',pf=sp?.62:key==='Enter'?.78:key==='Backspace'?.85:.93+(kc*7%11)/80,j=.97+Math.random()*.06;
+ const N=(o,type,f,q,g,d)=>{const n=Math.floor(c.sampleRate*(d+.02)),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const F=c.createBiquadFilter();F.type=type;F.frequency.value=f*pf*j;F.Q.value=q;const G=c.createGain();G.gain.setValueAtTime(.0001,t+o);G.gain.linearRampToValueAtTime(g*K,t+o+.001);G.gain.exponentialRampToValueAtTime(.0001,t+o+d);s.connect(F);F.connect(G);G.connect(M);s.start(t+o);s.stop(t+o+d+.02)};
+ const RG=(o,f,q,g,d)=>{const n=Math.floor(c.sampleRate*.004),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=(Math.random()*2-1)*(1-i/n);const s=c.createBufferSource();s.buffer=b;const F=c.createBiquadFilter();F.type='bandpass';F.frequency.value=f*pf*j;F.Q.value=q;const G=c.createGain();G.gain.setValueAtTime(g*K*6,t+o);G.gain.exponentialRampToValueAtTime(.0001,t+o+d);s.connect(F);F.connect(G);G.connect(M);s.start(t+o)};
+ const B=(o,f0,f1,g,d)=>{const x=c.createOscillator(),G=c.createGain();x.frequency.setValueAtTime(f0*j,t+o);x.frequency.exponentialRampToValueAtTime(f1*j,t+o+d);G.gain.setValueAtTime(.0001,t+o);G.gain.linearRampToValueAtTime(g*K,t+o+.004);G.gain.exponentialRampToValueAtTime(.0001,t+o+d);x.connect(G);G.connect(M);x.start(t+o);x.stop(t+o+d+.01)};
+ const th=(o,fs,g,d)=>fs.forEach((f,i)=>RG(o,f,6+i*2,g/(1+i*.5),d));
+ if(sp&&p!==4)RG(.02,2000,5,.12,.012);
+ if(p===1){RG(0,4200,14,.55,.03);N(0,'highpass',3500,.7,.25,.004);RG(.004,3100,12,.4,.025);N(.05,'lowpass',1800,.7,.5,.014);th(.05,[240,480,900],.7,.07);RG(.115,3600,14,.2,.018)}
+ else if(p===2){RG(0,2400,8,.18,.015);N(.04,'lowpass',1500,.7,.4,.012);th(.04,[260,520,1100],.55,.06);RG(.1,3000,10,.1,.012)}
+ else if(p===3){N(0,'lowpass',900,.7,.25,.015);RG(0,700,5,.25,.025);N(.045,'lowpass',1300,.7,.45,.014);th(.045,[200,400,760],.7,.075);RG(.105,2200,10,.08,.012)}
+ else if(p===4){N(.03,'lowpass',450,.7,.6,.03);th(.03,[120,190,300,80],.9,.12);RG(.1,500,6,.15,.04)}
+ else if(p===5){RG(0,5200,16,.5,.025);N(0,'highpass',5500,.6,.3,.01);N(.035,'lowpass',1600,.7,.4,.012);th(.035,[300,560,1400],.55,.06);N(.1,'highpass',6000,.5,.12,.03)}
+ else if(p===6){N(.03,'lowpass',1100,.7,.4,.012);th(.03,[220,420,800],.6,.08);B(.012,320,760,.2,.06);B(.06,460,980,.16,.05);B(.1,280,680,.13,.06);N(.02,'lowpass',650,.8,.12,.07)}
+ else{N(.03,'lowpass',380,.7,.6,.04);th(.03,[90,140,220],1,.16);N(.05,'bandpass',700,2,.2,.06);B(.07,95,230,.2,.1)}
+}catch(e){}}
+function shelf(a){
+ const B=S.books.filter(b=>b.shelved),P=[['#111','#f2f2f2'],['#2e2e2e','#f2f2f2'],['#e6e6e6','#111'],['#8a8a8a','#fff'],['#4a4a4a','#f2f2f2'],['#cfcfcf','#111'],['#1c1c1c','#ddd'],['#b5b5b5','#111']],RN=Math.max(4,Math.ceil(B.length/6));
+ let h='';
+ for(let ri=0;ri<RN;ri++){const r=B.slice(ri*6,ri*6+6);
+  h+=`<div class="cell"><div class="bks">${r.map((b,i)=>{const k=ri*6+i,w=26+Math.min(16,b.ch.length*4),ht=118+Math.min(56,Math.floor(cnt(b)/150))+(k*37)%16,c=P[(k*3+ri)%P.length],lean=r.length>1&&r.length<6&&i===r.length-1;return `<button class="sp" data-id="${b.id}" style="width:${w}px;height:${ht}px;line-height:${w}px;background:${c[0]};color:${c[1]};${lean?'rotate:-7deg;transform-origin:bottom right;':''}">${esc(b.title||'제목 없음')}</button>`}).join('')}</div><div class="pl"></div></div>`}
+ a.innerHTML=`<header class="top"><button class="ic" id="back" aria-label="뒤로">‹</button><h1 style="font-size:20px">책장</h1></header><div style="overflow:auto;flex:1;padding:8px 0 24px"><div class="cs">${h}</div><div class="base"></div><p class="sec" style="text-align:center;margin:18px 28px;line-height:1.6">${B.length?B.length+'권':'홈에서 글을 눌러 \'책장에 반영하기\'를 선택하면 여기에 꽂혀요.'}</p></div>`;
+ $('#back').onclick=()=>go('lib');
+ a.querySelectorAll('.sp').forEach(s=>s.onclick=()=>{s.classList.add('pull');setTimeout(()=>{const id=s.dataset.id,k=S.books.findIndex(x=>x.id===id),m=S.books.splice(k,1)[0];S.books.unshift(m);S.cur=id;S.ci=0;save();go('ed')},260)});
+}
+function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;$('#app').appendChild(e);setTimeout(()=>e.remove(),1600)}
+function sheet(id){const b=S.books.find(x=>x.id===id);if(!b)return;const o=document.createElement('div');o.className='sh';o.innerHTML=`<div class="sh-bg"></div><div class="sh-p"><b>${esc(b.title||'제목 없음')}</b><button id="s1">이어서 쓰기</button><button id="s2">${b.shelved?'책장에서 빼기':'책장에 반영하기'}</button><button class="x" id="s3">닫기</button></div>`;$('#app').appendChild(o);const cl=()=>o.remove();o.querySelector('.sh-bg').onclick=cl;$('#s3').onclick=cl;$('#s1').onclick=()=>{cl();const k=S.books.findIndex(x=>x.id===id),m=S.books.splice(k,1)[0];S.books.unshift(m);S.cur=id;S.ci=0;save();go('ed')};$('#s2').onclick=()=>{b.shelved=!b.shelved;save();cl();R();toast(b.shelved?'책장에 꽂았어요':'책장에서 빼었어요')}}
+R();
+</script>
+</body>
+</html>
