@@ -127,6 +127,30 @@ input[type=range]{accent-color:var(--fg)}
 .sh-p button{background:var(--card);border-radius:16px;padding:16px;font-size:16px;font-weight:600;text-align:left}
 .sh-p button.x{color:var(--sub);background:none;text-align:center;font-weight:500}
 .toast{position:absolute;left:50%;bottom:90px;transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:999px;font-size:14px;z-index:30;animation:fi .3s}
+.tr2{display:flex;align-items:center;gap:6px;padding:14px 16px}
+.tr2+.tr2{border-top:1px solid var(--line)}
+.tr2>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.tr2 small{color:var(--sub);font-size:12px}
+.tr2 b{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+@media (min-width:900px){
+#app{max-width:1180px}
+#app>.top,#app>div:not(.mn):not(.sh):not(.toast):not(.intro){max-width:760px;margin-inline:auto;width:100%}
+#app.dk{flex-direction:row}
+.sd{width:260px;flex:none;border-right:1px solid var(--line);padding:22px 16px;display:flex;flex-direction:column;gap:4px;overflow:auto}
+.sd h2{margin:0 0 14px 8px;font-size:30px;letter-spacing:-.04em}
+.sd .pill{margin:0 0 12px}
+.sd .sec{margin:12px 8px 6px}
+.si{text-align:left;padding:11px 12px;border-radius:12px;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.si:hover{background:var(--card)}.si.on{background:var(--card);font-weight:700}
+.sl{margin-top:auto;border-top:1px solid var(--line);padding-top:10px;display:flex;flex-direction:column}
+.mn{flex:1;min-width:0;display:flex;flex-direction:column}
+.dk .mn .top,.dk .mn .tabs,.dk .mn .bar,.dk .mn .ct,.dk .mn #tx{max-width:760px;width:100%;margin-inline:auto}
+.dk .mn #tx{font-size:18px;line-height:2}
+.stage{justify-content:center}
+.bk{max-width:560px}
+.cs{max-width:640px;margin-inline:auto}
+.base{max-width:580px;margin-inline:auto}
+}
 </style>
 </head>
 <body>
@@ -166,7 +190,7 @@ function tickOld(){const p=S.snd||0;if(!p)return;try{const c=AC();if(c.state==='
  else{T(140,70,.55,.09);N(0,700,.8,.25,.05)}
 }catch(e){}}
 function swish(){if(S.ps===0)return;try{const c=AC(),n=Math.floor(c.sampleRate*.4),b=c.createBuffer(1,n,c.sampleRate),x=b.getChannelData(0);for(let i=0;i<n;i++)x[i]=Math.random()*2-1;const s=c.createBufferSource();s.buffer=b;const F=c.createBiquadFilter();F.type='bandpass';F.Q.value=.7;const t=c.currentTime;F.frequency.setValueAtTime(900,t);F.frequency.exponentialRampToValueAtTime(3200,t+.35);const G=c.createGain();G.gain.setValueAtTime(.001,t);G.gain.linearRampToValueAtTime(.12*KV(),t+.12);G.gain.exponentialRampToValueAtTime(.001,t+.4);s.connect(F);F.connect(G);G.connect(c.destination);s.start(t)}catch(e){}}
-function R(){const a=$('#app');if(view==='intro'){a.innerHTML='<div class="intro"><h1><span id="ty"></span><b class="cu">_</b></h1><p>써내려가는 시간</p></div>';['ㄱ','겨','결'].forEach((s,i)=>setTimeout(()=>{const e=$('#ty');if(e)e.textContent=s},200+i*200));const n=()=>{if(view==='intro')go('lib')};a.onclick=n;setTimeout(n,1700);return}a.onclick=null;if(view==='lib'){lib(a);a.insertAdjacentHTML('beforeend','<button class="gear" id="gr" aria-label="설정">'+GEAR+'</button>');$('#gr').onclick=()=>go('set');a.insertAdjacentHTML('beforeend','<button class="pill shb" id="sh">책장</button>');$('#sh').onclick=()=>go('shelf')}else if(view==='ed')ed(a);else if(view==='set')setPage(a);else if(view==='shelf')shelf(a);else bk(a)}
+function R(){const a=$('#app');if(view==='intro'){a.innerHTML='<div class="intro"><h1><span id="ty"></span><b class="cu">_</b></h1><p>써내려가는 시간</p></div>';['ㄱ','겨','결'].forEach((s,i)=>setTimeout(()=>{const e=$('#ty');if(e)e.textContent=s},200+i*200));const n=()=>{if(view==='intro')go('lib')};a.onclick=n;setTimeout(n,1700);return}a.onclick=null;a.className='';if(view==='lib'){lib(a);a.insertAdjacentHTML('beforeend','<button class="gear" id="gr" aria-label="설정">'+GEAR+'</button>');$('#gr').onclick=()=>go('set');a.insertAdjacentHTML('beforeend','<button class="pill shb" id="sh">책장</button>');$('#sh').onclick=()=>go('shelf')}else if(view==='ed'){const w=innerWidth>=900;a.className=w?'dk':'';ed(a);if(w)desk(a)}else if(view==='set')setPage(a);else if(view==='shelf')shelf(a);else if(view==='trash')trashPage(a);else bk(a)}
 const GEAR='<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09a1.65 1.65 0 0 0-1-1.51 1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09a1.65 1.65 0 0 0 1.51-1 1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33h0a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51h0a1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82v0a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>';
 const KV=()=>(S.vol??.7)/.7;
 function shelf(a){
@@ -179,7 +203,8 @@ function shelf(a){
 function setPage(a){
  const cs=S.snd||0;
  a.innerHTML=`<header class="top"><button class="ic" id="back" aria-label="뒤로">‹</button><h1 style="font-size:20px">설정</h1></header>
- <div style="overflow:auto;flex:1;padding:0 20px 24px"><p class="sec" style="margin:8px 0">화면</p><div class="opts">${[['system','시스템 설정 따라가기'],['light','라이트'],['dark','다크']].map(([k,n])=>`<button class="opt th ${(S.theme||'system')===k?'on':''}" data-t="${k}"><span>${n}</span><i>${(S.theme||'system')===k?'✓':''}</i></button>`).join('')}</div>
+ <div style="overflow:auto;flex:1;padding:0 20px 24px"><div class="opts" style="margin-bottom:22px"><button class="opt" id="trb"><span>휴지통</span><i>${(S.trash||[]).length}개 ›</i></button></div>
+ <p class="sec" style="margin:8px 0">화면</p><div class="opts">${[['system','시스템 설정 따라가기'],['light','라이트'],['dark','다크']].map(([k,n])=>`<button class="opt th ${(S.theme||'system')===k?'on':''}" data-t="${k}"><span>${n}</span><i>${(S.theme||'system')===k?'✓':''}</i></button>`).join('')}</div>
  <p class="sec" style="margin:22px 0 8px">키보드 타건음</p><div class="opts">${SN.map((n,i)=>`<button class="opt ${cs===i?'on':''}" data-i="${i}"><span>${n}</span><i>${cs===i?'✓':''}</i></button>`).join('')}</div>
  <p class="sec" style="margin:22px 0 8px">페이지 넘김</p><div class="opts"><button class="opt" id="ps"><span>넘길 때 소리</span><i>${S.ps===0?'꺼짐':'켜짐'}</i></button></div>
  <p class="sec" style="margin:22px 0 8px">볼륨</p><input type="range" id="vol" min="10" max="100" value="${Math.round((S.vol??.7)*100)}" style="width:100%">
@@ -190,6 +215,7 @@ function setPage(a){
  $('#vol').onchange=()=>tick();
  $('#ps').onclick=()=>{S.ps=S.ps===0?1:0;save();swish();setPage(a)};
  a.querySelectorAll('.th').forEach(b=>b.onclick=()=>{S.theme=b.dataset.t;save();applyTheme();setPage(a)});
+ $('#trb').onclick=()=>go('trash');
 }
 
 function lib(a){
@@ -237,8 +263,8 @@ function ed(a){
  a.querySelectorAll('.tab[data-i]').forEach(t=>t.onclick=()=>{S.ci=+t.dataset.i;save();R()});
  $('#del').onclick=e=>{
   if(b.ch.length<2){e.target.textContent='마지막 챕터예요';return}
-  if(!armed){armed=true;e.target.textContent='한 번 더 누르면 삭제';return}
-  b.ch.splice(S.ci,1);S.ci=Math.max(0,S.ci-1);armed=false;save();R();
+  if(!armed){armed=true;e.target.textContent='한 번 더 누르면 휴지통으로';return}
+  const x=b.ch.splice(S.ci,1)[0];(S.trash=S.trash||[]).unshift({k:'ch',bid:b.id,bt:b.title,ch:x,at:Date.now()});S.ci=Math.max(0,S.ci-1);armed=false;save();R();toast('휴지통으로 옮겼어요');
  };
  const on=$('.tab.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});
  if(!c.b&&!b.title&&!c.t)$('#tx').focus();
@@ -348,7 +374,16 @@ function shelf(a){
  a.querySelectorAll('.sp').forEach(s=>s.onclick=()=>{s.classList.add('pull');setTimeout(()=>{const id=s.dataset.id,k=S.books.findIndex(x=>x.id===id),m=S.books.splice(k,1)[0];S.books.unshift(m);S.cur=id;S.ci=0;save();go('ed')},260)});
 }
 function toast(m){const e=document.createElement('div');e.className='toast';e.textContent=m;$('#app').appendChild(e);setTimeout(()=>e.remove(),1600)}
-function sheet(id){const b=S.books.find(x=>x.id===id);if(!b)return;const o=document.createElement('div');o.className='sh';o.innerHTML=`<div class="sh-bg"></div><div class="sh-p"><b>${esc(b.title||'제목 없음')}</b><button id="s1">이어서 쓰기</button><button id="s2">${b.shelved?'책장에서 빼기':'책장에 반영하기'}</button><button class="x" id="s3">닫기</button></div>`;$('#app').appendChild(o);const cl=()=>o.remove();o.querySelector('.sh-bg').onclick=cl;$('#s3').onclick=cl;$('#s1').onclick=()=>{cl();const k=S.books.findIndex(x=>x.id===id),m=S.books.splice(k,1)[0];S.books.unshift(m);S.cur=id;S.ci=0;save();go('ed')};$('#s2').onclick=()=>{b.shelved=!b.shelved;save();cl();R();toast(b.shelved?'책장에 꽂았어요':'책장에서 빼었어요')}}
+function sheet(id){const b=S.books.find(x=>x.id===id);if(!b)return;const o=document.createElement('div');o.className='sh';o.innerHTML=`<div class="sh-bg"></div><div class="sh-p"><b>${esc(b.title||'제목 없음')}</b><button id="s1">이어서 쓰기</button><button id="s2">${b.shelved?'책장에서 빼기':'책장에 반영하기'}</button><button id="s4">휴지통으로 이동</button><button class="x" id="s3">닫기</button></div>`;$('#app').appendChild(o);const cl=()=>o.remove();o.querySelector('.sh-bg').onclick=cl;$('#s3').onclick=cl;$('#s4').onclick=()=>{cl();const k=S.books.findIndex(x=>x.id===id);S.books.splice(k,1);(S.trash=S.trash||[]).unshift({k:'book',book:b,at:Date.now()});if(S.cur===id)S.cur=S.books[0]?S.books[0].id:null;save();R();toast('휴지통으로 옮겼어요')};$('#s1').onclick=()=>{cl();const k=S.books.findIndex(x=>x.id===id),m=S.books.splice(k,1)[0];S.books.unshift(m);S.cur=id;S.ci=0;save();go('ed')};$('#s2').onclick=()=>{b.shelved=!b.shelved;save();cl();R();toast(b.shelved?'책장에 꽂았어요':'책장에서 빼었어요')}}
+S.trash=(S.trash||[]).filter(t=>Date.now()-t.at<2592e6);
+function desk(a){const w=document.createElement('div');w.className='mn';while(a.firstChild)w.appendChild(a.firstChild);const sd=document.createElement('aside');sd.className='sd';sd.innerHTML=`<h2>결</h2><button class="pill" id="dn">＋ 새 글</button><p class="sec">내 글</p>${S.books.map(b=>`<button class="si ${b.id===S.cur?'on':''}" data-id="${b.id}">${esc(b.title||'제목 없음')}</button>`).join('')}<div class="sl"><button class="si" id="d1">책장</button><button class="si" id="d2">휴지통</button><button class="si" id="d3">설정</button></div>`;a.append(sd,w);$('#dn').onclick=newBook;sd.querySelectorAll('.si[data-id]').forEach(s=>s.onclick=()=>{S.cur=s.dataset.id;S.ci=0;save();R()});$('#d1').onclick=()=>go('shelf');$('#d2').onclick=()=>go('trash');$('#d3').onclick=()=>go('set')}
+function trashPage(a){const T=S.trash||[];
+ a.innerHTML=`<header class="top"><button class="ic" id="back" aria-label="뒤로">‹</button><h1 style="font-size:20px">휴지통</h1>${T.length?'<button class="txt" id="emp">비우기</button>':''}</header><div style="overflow:auto;flex:1;padding:0 20px 24px">${T.length?`<p class="sec" style="margin:8px 0">30일이 지나면 자동으로 완전히 삭제돼요.</p><div class="opts">${T.map((t,i)=>`<div class="tr2"><span><b>${esc(t.k==='book'?(t.book.title||'제목 없음'):(t.ch.t||'제목 없음'))}</b><small>${t.k==='book'?'책 · '+t.book.ch.length+'개 챕터':'챕터 · '+esc(t.bt||'제목 없음')} · ${Math.max(0,30-Math.floor((Date.now()-t.at)/864e5))}일 남음</small></span><button class="txt" data-r="${i}">복원</button><button class="txt" data-d="${i}">삭제</button></div>`).join('')}</div>`:'<p class="empty" style="margin-top:20vh">휴지통이 비어 있어요.</p>'}</div>`;
+ $('#back').onclick=()=>go('lib');
+ const em=$('#emp');if(em)em.onclick=()=>{if(!em.dataset.a){em.dataset.a=1;em.textContent='정말 비울까요?';return}S.trash=[];save();trashPage(a);toast('휴지통을 비웠어요')};
+ a.querySelectorAll('[data-r]').forEach(x=>x.onclick=()=>{const t=S.trash.splice(+x.dataset.r,1)[0];if(t.k==='book')S.books.unshift(t.book);else{const q=S.books.find(y=>y.id===t.bid);if(q)q.ch.push(t.ch);else S.books.unshift({id:t.bid||uid(),title:t.bt||'',ch:[t.ch]})}save();trashPage(a);toast('복원했어요')});
+ a.querySelectorAll('[data-d]').forEach(x=>x.onclick=()=>{if(!x.dataset.a){x.dataset.a=1;x.textContent='정말?';return}S.trash.splice(+x.dataset.d,1);save();trashPage(a)});
+}
 R();
 </script>
 </body>
